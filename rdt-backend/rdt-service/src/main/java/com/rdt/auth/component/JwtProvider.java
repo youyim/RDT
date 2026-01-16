@@ -4,6 +4,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date; // NOPMD
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ public class JwtProvider {
 
     // TODO: Move to configuration
     private static final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final long EXPIRATION = 7_200_000; // 2 hours
+    private static final long EXPIRATION_MS = 7_200_000; // 2 hours
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -23,14 +25,14 @@ public class JwtProvider {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION);
+        Instant now = Instant.now();
+        Instant expiry = now.plus(EXPIRATION_MS, ChronoUnit.MILLIS);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .setIssuedAt(Date.from(now)) // Required by JJWT
+                .setExpiration(Date.from(expiry)) // Required by JJWT
                 .signWith(KEY)
                 .compact();
     }

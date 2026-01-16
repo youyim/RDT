@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -49,7 +51,10 @@ public class AuthController {
     @PreAuthorize("permitAll()")
     @PostMapping("/logout")
     public Result<Void> logout() {
-        // TODO: 完善登出逻辑 (如使 Token 进入黑名单)
+        // Note: For stateless JWT, true logout requires a blacklist (Redis-based
+        // solution).
+        // Current implementation relies on client-side token removal.
+        log.info("User requested logout");
         return Result.success();
     }
 }

@@ -10,11 +10,15 @@ import com.rdt.auth.service.AuthService;
 import com.rdt.common.exception.BusinessException;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -43,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
                 userRepository.selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, req.getUsername()));
 
         if (user == null) {
+            log.warn("Login failed: Username '{}' not found", req.getUsername());
             throw new BusinessException(ERR_USER_OR_PASS, "Invalid username or password");
         }
 
@@ -55,11 +60,13 @@ public class AuthServiceImpl implements AuthService {
 
     private void checkUserStatus(SysUser user) {
         if (user.getStatus() == STATUS_DISABLED) {
+            log.warn("Login failed: Account '{}' is disabled", user.getUsername());
             throw new BusinessException(ERR_ACCOUNT_DISABLED, "Account is disabled");
         }
 
         if (user.getStatus() == STATUS_LOCKED) {
             if (user.getLockExpireTime() != null && user.getLockExpireTime().isAfter(LocalDateTime.now())) {
+                log.warn("Login failed: Account '{}' is locked until {}", user.getUsername(), user.getLockExpireTime());
                 throw new BusinessException(ERR_ACCOUNT_LOCKED, "Account is locked, please try again later");
             }
             // Auto unlock if expired
@@ -77,9 +84,11 @@ public class AuthServiceImpl implements AuthService {
                 user.setStatus(STATUS_LOCKED);
                 user.setLockExpireTime(LocalDateTime.now().plusMinutes(LOCK_TIME_MINUTES));
                 userRepository.updateById(user);
+                log.warn("Account '{}' locked due to {} failed attempts", user.getUsername(), attempts);
                 throw new BusinessException(ERR_ACCOUNT_LOCKED, "Account locked due to too many failed attempts");
             }
             userRepository.updateById(user);
+            log.warn("Login failed: Invalid password for user '{}', attempts: {}", user.getUsername(), attempts);
             throw new BusinessException(ERR_USER_OR_PASS, "Invalid username or password");
         }
     }

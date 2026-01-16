@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rdt.auth.component.JwtProvider;
 import com.rdt.auth.model.dto.LoginReq;
 import com.rdt.auth.model.dto.LoginResp;
 import com.rdt.auth.service.AuthService;
@@ -28,6 +29,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private JwtProvider jwtProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
