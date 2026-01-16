@@ -30,6 +30,18 @@ class JwtProviderTest {
     }
 
     @Test
+    void validateToken_InvalidToken() {
+        assertFalse(jwtProvider.validateToken("invalid.token.here"));
+    }
+
+    @Test
+    void validateToken_TamperedToken() {
+        String token = jwtProvider.generateToken("testuser");
+        String tamperedToken = token + "tamper";
+        assertFalse(jwtProvider.validateToken(tamperedToken));
+    }
+
+    @Test
     void getUsernameFromToken_Success() {
         String token = jwtProvider.generateToken("testuser");
         assertEquals("testuser", jwtProvider.getUsernameFromToken(token));

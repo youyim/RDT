@@ -1,5 +1,6 @@
 package com.rdt.auth.component;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -9,8 +10,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date; // NOPMD
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @SuppressWarnings("PMD.NoLegacyTimeAPI")
 public class JwtProvider {
@@ -38,8 +41,13 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
-        // Implementation needed
-        return true;
+        try {
+            Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        }
+        return false;
     }
 
     public String getUsernameFromToken(String token) {
