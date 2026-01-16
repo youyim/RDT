@@ -18,30 +18,30 @@ describe('LoginPage', () => {
   it('renders login form elements', () => {
     renderWithRouter(<LoginPage />);
 
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/login.emailLabel/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/login.passwordLabel/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login.signInButton/i })).toBeInTheDocument();
   });
 
   it('shows validation error when submitting empty form', async () => {
     renderWithRouter(<LoginPage />);
     const user = userEvent.setup();
 
-    const submitBtn = screen.getByRole('button', { name: /sign in/i });
+    const submitBtn = screen.getByRole('button', { name: /login.signInButton/i });
     await user.click(submitBtn);
 
     // Expect validation messages (implementation specific, but likely standard HTML or UI kit)
     // For now assuming HTML5 validation or custom text
-    expect(await screen.findByText(/username is required/i)).toBeInTheDocument();
+    expect(await screen.findByText(/validation.usernameRequired/i)).toBeInTheDocument();
   });
 
   it('handles successful login', async () => {
     renderWithRouter(<LoginPage />);
     const user = userEvent.setup();
 
-    const usernameInput = screen.getByLabelText(/username/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const submitBtn = screen.getByRole('button', { name: /sign in/i });
+    const usernameInput = screen.getByLabelText(/login.emailLabel/i);
+    const passwordInput = screen.getByLabelText(/login.passwordLabel/i);
+    const submitBtn = screen.getByRole('button', { name: /login.signInButton/i });
 
     await user.type(usernameInput, 'admin');
     await user.type(passwordInput, 'password');
@@ -56,7 +56,7 @@ describe('LoginPage', () => {
     // Waiting for potential redirect or success state
     // checks valid login doesn't show error
     await waitFor(() => {
-      expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/validation.loginFailed/i)).not.toBeInTheDocument();
     });
   });
 
@@ -64,14 +64,14 @@ describe('LoginPage', () => {
     renderWithRouter(<LoginPage />);
     const user = userEvent.setup();
 
-    const usernameInput = screen.getByLabelText(/username/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const submitBtn = screen.getByRole('button', { name: /sign in/i });
+    const usernameInput = screen.getByLabelText(/login.emailLabel/i);
+    const passwordInput = screen.getByLabelText(/login.passwordLabel/i);
+    const submitBtn = screen.getByRole('button', { name: /login.signInButton/i });
 
     await user.type(usernameInput, 'admin');
     await user.type(passwordInput, 'wrongpassword');
     await user.click(submitBtn);
 
-    expect(await screen.findByText(/invalid username or password/i)).toBeInTheDocument();
+    expect(await screen.findByText(/validation.loginFailed/i)).toBeInTheDocument();
   });
 });
