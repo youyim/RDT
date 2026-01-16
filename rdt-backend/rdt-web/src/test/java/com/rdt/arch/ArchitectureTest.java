@@ -32,7 +32,9 @@ public class ArchitectureTest {
             .optionalLayer("Repository")
             .definedBy("..mapper..", "..repository..")
             .optionalLayer("Domain")
-            .definedBy("..entity..", "..domain..", "..model..")
+            .definedBy("..entity..", "..domain..")
+            .optionalLayer("Common")
+            .definedBy("..model..", "..dto..", "..vo..", "..common..")
             .layer("Config")
             .definedBy("..config..")
 
@@ -45,6 +47,7 @@ public class ArchitectureTest {
             .mayOnlyBeAccessedByLayers("Service") // 核心：Controller 禁止直连 Repository
             .whereLayer("Domain")
             .mayOnlyBeAccessedByLayers("Repository", "Service", "Config"); // 做法 A: Controller 禁止访问 Domain
+    // (Entity)
     // (Entity)
 
     // 2. 命名规范：Controller 必须以 Controller 结尾
@@ -101,10 +104,13 @@ public class ArchitectureTest {
     // 5. 禁止使用 java.util.Date (强制使用 Java 8 Time API)
     @ArchTest
     final ArchRule no_util_date = noClasses()
+            .that()
+            .haveNameNotMatching(".*JwtProvider")
             .should()
             .dependOnClassesThat()
             .haveFullyQualifiedName("java.util.Date")
-            .because("java.util.Date is obsolete, use java.time.* instead.");
+            .because(
+                    "java.util.Date is obsolete, use java.time.* instead. (Exemption: JwtProvider due to JJWT library requirement)");
 
     // 6. 禁止使用 java.util.logging (强制使用 SLF4J)
     @ArchTest

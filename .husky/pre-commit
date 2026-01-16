@@ -70,7 +70,7 @@ fi
 if [ "$BE_CHANGES" != "0" ]; then
     echo "☕ [Backend] Running tests & Architecture checks..."
     cd rdt-backend
-    if ! mvn test -q; then
+    if ! mvn verify -q; then
         echo "❌ [Backend] Tests failed!"
         exit 1
     fi

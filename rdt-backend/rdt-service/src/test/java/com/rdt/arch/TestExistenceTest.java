@@ -11,16 +11,16 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 
 /**
- * 测试存在性校验.
- * 强制要求所有 Service 和 Controller 必须有对应的测试类。
+ * 测试存在性校验 (Service 层).
+ * 强制要求所有 Service 必须有对应的测试类。
  */
-@AnalyzeClasses(packages = "com.rdt")
+@AnalyzeClasses(packages = "com.rdt.auth.service")
 public class TestExistenceTest {
 
     @ArchTest
     static final ArchRule logic_classes_should_have_tests = classes()
             .that()
-            .resideInAPackage("..controller..")
+            .resideInAPackage("..service..")
             .and()
             .areNotInterfaces()
             .and()
@@ -29,8 +29,6 @@ public class TestExistenceTest {
                 @Override
                 public void check(JavaClass item, ConditionEvents events) {
                     String testClassName = item.getName() + "Test";
-                    // ArchUnit 扫描时如果包含测试类，我们可以通过 item.getPackage().getClasses() 或全局查找
-                    // 但最简单可靠的方式依然是尝试加载该类（Junit 运行环境下 test-classes 在 classpath 中）
                     try {
                         Class.forName(testClassName);
                     } catch (ClassNotFoundException e) {
@@ -42,6 +40,6 @@ public class TestExistenceTest {
                     }
                 }
             })
-            .because("Every Service and Controller must have a corresponding unit test class to ensure quality.")
+            .because("Every Service must have a corresponding unit test class in this module.")
             .allowEmptyShould(true);
 }

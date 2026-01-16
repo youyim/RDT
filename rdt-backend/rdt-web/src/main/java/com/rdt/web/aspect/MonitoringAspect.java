@@ -32,7 +32,6 @@ public class MonitoringAspect {
     private static final long NS_TO_MS_DIVISOR = 1_000_000L;
 
     @Around("@annotation(monitored) || @within(monitored)")
-    @SuppressWarnings("PMD.AvoidReassigningParameters")
     public Object interact(ProceedingJoinPoint joinPoint, Monitored monitored) throws Throwable {
         Monitored effectiveMonitored = monitored;
         if (effectiveMonitored == null) {

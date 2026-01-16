@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "accent": "#137fec",
+                        "background-light": "#f0f0f5",
+                        "background-dark": "#0a0a10",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.03;
+    z-index: 50;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAn1DughR6s1TyUm3Seziz6iGLRwe7RL87XUG6st5F5g3EOO_rqgd9qeIK5jtEdJT_TYZ8N9yVCIoF4NYI8UCwPH-NkfMKZecK8ckP6FFH8W0GTbJLoooLwyVvzFfoa-OcDOjE7qogh3iCrPmNTp4_P7pe6pGgh4qL797XMck3f1v_UZ3tlUrOVQJuoweO9pFekNB781S6PnMfPbTDgBDDysZi6mcQhqo5WEP1tkebPwJAVIpf4qufG7orE-oIhjkaYQB5h0QMGKKD8)
+    }
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1)
+    }
+.glow-effect {
+    box-shadow: 0 0 40px 10px rgba(19, 127, 236, 0.15)
+    }
+.text-glow {
+    text-shadow: 0 0 20px rgba(19, 127, 236, 0.6)
+    }
+.graph-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 5s linear infinite
+    }
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+        }
+    }</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white min-h-screen overflow-x-hidden">
+<div class="noise-overlay"></div>
+<div class="flex min-h-screen w-full flex-col lg:flex-row relative">
+<!-- Left Side: Branding and Visualization -->
+<div class="relative flex flex-1 flex-col items-center justify-center p-8 lg:p-20 overflow-hidden bg-background-dark">
+<!-- Background Visualization (Stylized R&D Graph) -->
+<div class="absolute inset-0 z-0 opacity-40">
+<svg class="w-full h-full scale-125" fill="none" height="100%" viewbox="0 0 800 800" width="100%" xmlns="http://www.w3.org/2000/svg">
+<circle cx="400" cy="400" r="120" stroke="#137fec" stroke-opacity="0.3" stroke-width="0.5"></circle>
+<circle cx="400" cy="400" r="220" stroke="#137fec" stroke-opacity="0.2" stroke-width="0.5"></circle>
+<circle cx="400" cy="400" r="320" stroke="#137fec" stroke-opacity="0.1" stroke-width="0.5"></circle>
+<!-- Nodes -->
+<circle class="text-glow" cx="400" cy="280" fill="#137fec" r="6"></circle>
+<circle cx="510" cy="350" fill="#137fec" fill-opacity="0.6" r="4"></circle>
+<circle cx="290" cy="450" fill="#137fec" fill-opacity="0.8" r="5"></circle>
+<circle cx="550" cy="500" fill="#137fec" fill-opacity="0.4" r="3"></circle>
+<!-- Connectivity Lines -->
+<path class="graph-line" d="M400 280 L510 350 L550 500 L290 450 Z" stroke="#137fec" stroke-opacity="0.4" stroke-width="1.5"></path>
+<path d="M400 280 L290 450" stroke="#137fec" stroke-opacity="0.2" stroke-width="1"></path>
+</svg>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 flex flex-col items-start max-w-lg">
+<div class="flex items-center gap-4 mb-8">
+<div class="size-14 bg-accent rounded-xl flex items-center justify-center glow-effect shadow-accent/40 shadow-2xl">
+<svg class="w-8 h-8 text-white" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h1 class="text-4xl font-extrabold tracking-tighter text-glow">DevFlow</h1>
+</div>
+<h2 class="text-3xl lg:text-5xl font-extrabold leading-tight mb-6">
+                    Orchestrate <br/><span class="text-accent">R&amp;D Lifecycle</span>
+</h2>
+<p class="text-slate-400 text-lg leading-relaxed max-w-sm mb-10">
+                    Advanced process management and resource scheduling for high-stakes engineering environments.
+                </p>
+<div class="flex gap-4">
+<div class="p-3 glass-card rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-accent">auto_mode</span>
+</div>
+<div class="p-3 glass-card rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-accent">schedule</span>
+</div>
+<div class="p-3 glass-card rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-accent">hub</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Login Form -->
+<div class="relative flex flex-1 items-center justify-center p-6 bg-background-dark/80 lg:bg-transparent">
+<div class="w-full max-w-[440px] glass-card p-8 lg:p-12 rounded-2xl shadow-2xl relative overflow-hidden group">
+<!-- Inner card subtle light sweep -->
+<div class="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/5 to-transparent rotate-45 pointer-events-none transition-transform duration-1000 group-hover:translate-x-full"></div>
+<div class="relative z-10">
+<div class="mb-10 text-center lg:text-left">
+<h3 class="text-white text-3xl font-extrabold tracking-tight mb-2">Sign In</h3>
+<p class="text-slate-400 text-sm">Access your enterprise R&amp;D workspace</p>
+</div>
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="text-slate-200 text-sm font-medium px-1">Corporate Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl">alternate_email</span>
+<input class="w-full h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-all text-base" placeholder="name@company.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between px-1">
+<label class="text-slate-200 text-sm font-medium">Password</label>
+<a class="text-accent text-xs font-semibold hover:underline" href="#">Forgot?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl">lock</span>
+<input class="w-full h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-all text-base" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<button class="w-full h-14 bg-gradient-to-r from-accent to-[#0e6ed2] text-white font-bold rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2" type="submit">
+<span>Sign In to DevFlow</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 relative">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-white/10"></div>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-transparent px-2 text-slate-500 font-medium">Or continue with</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 h-12 rounded-xl bg-white/3 border border-white/5 hover:bg-white/10 transition-colors">
+<img alt="" class="w-5 h-5" data-alt="GitLab orange fox logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQi_F9h7I1KxVP6KnLHmIsHKi9_KP994iIFv0EgpEoy4RhjO6S3IUty2HWUVkfhX_gnstWz32I60yDiQ6fdjNSdf38yBiRcV4O6_lU17WHd_AwxRwPmr0Iuu0Wqj1kZ3YEkmU6BG9CJ_YDwFuGCLx4fccPtZ3whRE_0k-_MBdrSa2Jz2g9CpwY1MW_j84w-_qtGisaHl4KRzOaP4zUZIAruvlOaub3QMGccDdKgV7JfIBK0PqzRI5CmPGOHq7GKRltNs9BbBLqPXJS"/>
+<span class="text-slate-300 font-semibold text-sm">GitLab</span>
+</button>
+<button class="flex items-center justify-center gap-2 h-12 rounded-xl bg-white/3 border border-white/5 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-300">shield_person</span>
+<span class="text-slate-300 font-semibold text-sm">LDAP</span>
+</button>
+</div>
+<p class="mt-10 text-center text-slate-500 text-xs">
+                        Don't have an account? 
+                        <a class="text-slate-300 font-bold hover:text-white transition-colors" href="#">Request access</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-10 lg:left-20 lg:translate-x-0 hidden lg:block">
+<p class="text-slate-600 text-[10px] tracking-widest uppercase font-bold">
+            © 2024 DevFlow Systems • Enterprise R&amp;D v4.2
+        </p>
+</div>
+</body></html>
