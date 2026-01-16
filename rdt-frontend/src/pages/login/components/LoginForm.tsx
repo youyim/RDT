@@ -1,24 +1,25 @@
-import { useState } from 'react';
+import { type ReactElement, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { AxiosResponse } from 'axios';
 import { z } from 'zod';
 
 import { auth } from '@/api/auth';
 import gitlabLogo from '@/assets/images/gitlab-logo.png';
 import { useRequest } from '@/hooks/useRequest';
 import { useAuthStore } from '@/store/useAuthStore';
+import type { LoginResponse } from '@/types/auth';
 import { ui } from '@/utils/ui';
-// The type `LoginResponse` is not directly used in the current `onSuccess` logic
-// because `res.data` is accessed, and the structure is checked at runtime.
-// If `LoginResponse` were to type `res` directly, it would need to be `AxiosResponse<LoginResponse>`.
-// For now, removing the import as it's not explicitly used to type `res` or `data`.
-// import type { LoginResponse } from '@/types/auth'; // Ensure we import the type if needed, or just rely on inference
-// Actually, to fix the type error cleanly without seeing types/auth, I'll access .data if it is AxiosResponse.
 
-const createLoginSchema = (t: (key: string) => string) =>
+const createLoginSchema = (
+  t: (key: string) => string
+): z.ZodObject<{
+  username: z.ZodString;
+  password: z.ZodString;
+}> =>
   z.object({
     username: z.string().min(1, t('validation.usernameRequired')),
     password: z.string().min(1, t('validation.passwordRequired')),
@@ -26,43 +27,39 @@ const createLoginSchema = (t: (key: string) => string) =>
 
 type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
 
-export const LoginForm = () => {
+export const LoginForm = (): ReactElement => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { login: setAuth } = useAuthStore();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { run: handleLogin, loading } = useRequest(auth.login, {
-    manual: true,
-    onSuccess: (res) => {
-      // but if strictly typed as AxiosResponse, we need to access data.
-      // However, if the project standard is to unwrap, the type might be wrong.
-      // I will try accessing data property.
-      const data = res.data || res; // Fallback
-      if (data && 'token' in data && 'user' in data) {
+  const loginSchema = useMemo(() => createLoginSchema(t), [t]);
+
+  const { run: handleLogin, loading } = useRequest<AxiosResponse<LoginResponse>, LoginResponse>(
+    auth.login,
+    {
+      manual: true,
+      formatResult: (res) => res.data,
+      onSuccess: (data) => {
         void setAuth(data.token, data.user);
         void ui.success(t('login.success'));
         void navigate('/');
-      } else {
-        // Handle unexpected structure
-        void console.error('Unexpected login response:', res);
-      }
-    },
-    onError: () => {
-      // For security and simplicity, show generic message
-      setErrorMessage(t('validation.loginFailed'));
-    },
-  });
+      },
+      onError: () => {
+        setErrorMessage(t('validation.loginFailed'));
+      },
+    }
+  );
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(createLoginSchema(t)),
+    resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues): Promise<void> => {
     setErrorMessage(null);
     try {
       await handleLogin(data);
