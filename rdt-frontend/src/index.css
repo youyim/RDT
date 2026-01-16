@@ -1,1 +1,58 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: #1313ec;
+  --color-accent: #137fec;
+  --color-background-light: #f0f0f5;
+  --color-background-dark: #0a0a10;
+  --color-surface: #121218;
+  --color-brand-blue: #0e6ed2;
+  --scale-98: 0.98;
+
+  --font-display: 'Inter', 'sans-serif';
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+@layer utilities {
+  .noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.03;
+    z-index: 50;
+    background-image: url('./assets/images/noise-overlay.png');
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 40px 10px rgba(19, 127, 236, 0.15);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(19, 127, 236, 0.6);
+  }
+
+  .graph-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 5s linear infinite;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

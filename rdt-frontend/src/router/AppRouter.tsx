@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-do
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import { MainLayout } from '@/layouts/MainLayout';
+import { LoginPage } from '@/pages/login/LoginPage';
 
 /**
  * Application Router Configuration
@@ -24,7 +25,10 @@ const routes: RouteObject[] = [
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      // Add auth routes (login, register) here
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
     ],
   },
   {

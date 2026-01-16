@@ -1,1 +1,31 @@
-{}
+{
+  "login": {
+    "title": "Sign In",
+    "subtitle": "Access your enterprise R&D workspace",
+    "emailLabel": "Corporate Email",
+    "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot?",
+    "signInButton": "Sign In to DevFlow",
+    "signingIn": "Signing in...",
+    "orContinueWith": "Or continue with",
+    "dontHaveAccount": "Don't have an account?",
+    "requestAccess": "Request access",
+    "success": "Login successful",
+    "gitlab": "GitLab",
+    "ldap": "LDAP"
+  },
+  "validation": {
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "loginFailed": "Invalid username or password"
+  },
+  "authLayout": {
+    "brandName": "DevFlow",
+    "headlinePrefix": "Orchestrate",
+    "headlineSuffix": "R&D Lifecycle",
+    "description": "Advanced process management and resource scheduling for high-stakes engineering environments.",
+    "footer": "© 2024 DevFlow Systems • Enterprise R&D v4.2"
+  }
+}
