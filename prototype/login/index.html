@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevFlow - Sign In</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: {
+                dark: '#0a0a10',
+                light: '#f0f0f5',
+              },
+              primary: '#1313ec',
+              accent: '#137fec',
+            },
+            animation: {
+              'dash': 'dash 5s linear infinite',
+              'fade-in': 'fadeIn 0.5s ease-out',
+            },
+            keyframes: {
+              dash: {
+                'to': { strokeDashoffset: '0' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a0a10;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      /* Noise Overlay Utility */
+      .bg-noise {
+        background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAn1DughR6s1TyUm3Seziz6iGLRwe7RL87XUG6st5F5g3EOO_rqgd9qeIK5jtEdJT_TYZ8N9yVCIoF4NYI8UCwPH-NkfMKZecK8ckP6FFH8W0GTbJLoooLwyVvzFfoa-OcDOjE7qogh3iCrPmNTp4_P7pe6pGgh4qL797XMck3f1v_UZ3tlUrOVQJuoweO9pFekNB781S6PnMfPbTDgBDDysZi6mcQhqo5WEP1tkebPwJAVIpf4qufG7orE-oIhjkaYQB5h0QMGKKD8');
+      }
+
+      /* Custom Glow Utilities */
+      .glow-effect {
+        box-shadow: 0 0 40px 10px rgba(19, 127, 236, 0.15);
+      }
+      .text-glow {
+        text-shadow: 0 0 20px rgba(19, 127, 236, 0.6);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
