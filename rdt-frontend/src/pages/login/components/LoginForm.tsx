@@ -40,10 +40,10 @@ export const LoginForm = (): ReactElement => {
     {
       manual: true,
       formatResult: (res) => res.data,
-      onSuccess: (data) => {
-        void setAuth(data.token, data.user);
-        void ui.success(t('login.success'));
-        void navigate('/');
+      onSuccess: async (data) => {
+        setAuth(data.token, data.user);
+        ui.success(t('login.success'));
+        await navigate('/');
       },
       onError: () => {
         setErrorMessage(t('validation.loginFailed'));
@@ -81,7 +81,12 @@ export const LoginForm = (): ReactElement => {
           <p className="text-sm text-slate-400">{t('login.subtitle')}</p>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            handleSubmit(onSubmit)(e).catch(() => {});
+          }}
+        >
           {/* Email Input */}
           <div className="space-y-2">
             <label

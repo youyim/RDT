@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 
 interface UseRequestOptions<T, R> {
   manual?: boolean;
-  onSuccess?: (data: R, params: unknown[]) => void;
-  onError?: (error: Error, params: unknown[]) => void;
+  onSuccess?: (data: R, params: unknown[]) => void | Promise<void>;
+  onError?: (error: Error, params: unknown[]) => void | Promise<void>;
   formatResult?: (data: T) => R;
 }
 
@@ -33,16 +33,14 @@ export function useRequest<T = unknown, R = T>(
         }
         setData(formattedData);
         if (options.onSuccess) {
-          // Normalize params to array for consistency or pass as is if expected
-          // Given the usage, params might be single value
-          options.onSuccess(formattedData, Array.isArray(params) ? params : [params]);
+          await options.onSuccess(formattedData, Array.isArray(params) ? params : [params]);
         }
         return formattedData;
       } catch (err) {
         const errorObj = err instanceof Error ? err : new Error(String(err));
         setError(errorObj);
         if (options.onError) {
-          options.onError(errorObj, Array.isArray(params) ? params : [params]);
+          await options.onError(errorObj, Array.isArray(params) ? params : [params]);
         }
         throw errorObj;
       } finally {
