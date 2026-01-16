@@ -1,0 +1,26 @@
+{
+  "name": "rdt",
+  "version": "1.0.0",
+  "description": "React 19 + Spring Boot 3 纯净骨架，专为 AI 辅助开发设计。",
+  "main": "commitlint.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/youyim/RDT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/youyim/RDT/issues"
+  },
+  "homepage": "https://github.com/youyim/RDT#readme",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^20.3.1",
+    "commitlint": "^20.3.1",
+    "husky": "^9.1.7"
+  }
+}

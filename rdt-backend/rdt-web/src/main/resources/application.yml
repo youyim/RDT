@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: rdt-backend
+  jackson:
+    # JSON 序列化配置
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+logging:
+  level:
+    root: INFO
+    "[com.rdt]": DEBUG

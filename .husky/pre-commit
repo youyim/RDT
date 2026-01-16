@@ -1,0 +1,109 @@
+#!/bin/sh
+
+# 保存项目根目录
+PROJECT_ROOT=$(pwd)
+
+# 检测变更范围
+FE_CHANGES=$(git diff --name-only --staged | grep "^rdt-frontend/" | wc -l | xargs)
+BE_CHANGES=$(git diff --name-only --staged | grep "^rdt-backend/" | wc -l | xargs)
+
+if [ "$FE_CHANGES" = "0" ] && [ "$BE_CHANGES" = "0" ]; then
+    exit 0
+fi
+
+echo "🚀 Starting RDT Pre-commit Hook (Fail-fast mode)..."
+
+# --- 第一阶段: 格式化与静态检查 (最快，最容易修复) ---
+if [ "$FE_CHANGES" != "0" ]; then
+    echo "📦 [Frontend] Formatting & Linting..."
+    cd rdt-frontend
+    if ! npx --no-install lint-staged; then
+        echo "❌ [Frontend] Lint/Format failed!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+fi
+
+if [ "$BE_CHANGES" != "0" ]; then
+    echo "☕ [Backend] Auto-formatting (spotless:apply)..."
+    cd rdt-backend
+    if mvn spotless:apply -q; then
+        # 自动将格式化后的变更加入暂存区 (仅更新已追踪的文件，防止误加 untracked 文件)
+        cd "$PROJECT_ROOT"
+        git add -u rdt-backend
+    else
+        echo "❌ [Backend] Format application failed!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+fi
+
+# --- 第二阶段: 逻辑校验 (测试) ---
+if [ "$FE_CHANGES" != "0" ]; then
+    cd rdt-frontend
+    STAGED_FILES=$(git diff --name-only --staged -- "src/**")
+    if [ -n "$STAGED_FILES" ]; then
+        echo "📦 [Frontend] Running related tests..."
+        if ! npx vitest related --run $STAGED_FILES; then
+            echo "❌ [Frontend] Tests failed!"
+            exit 1
+        fi
+    fi
+    cd "$PROJECT_ROOT"
+
+    
+    echo "🌍 [Frontend] Checking unused i18n keys..."
+    cd rdt-frontend
+    if ! npm run i18n:check; then
+        echo "❌ [Frontend] Unused i18n keys found!"
+        exit 1
+    fi
+    
+    echo "🌍 [Frontend] Verifying i18n keys alignment..."
+    if ! npm run i18n:compare; then
+        echo "❌ [Frontend] I18n keys mismatch!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+fi
+
+if [ "$BE_CHANGES" != "0" ]; then
+    echo "☕ [Backend] Running tests & Architecture checks..."
+    cd rdt-backend
+    if ! mvn test -q; then
+        echo "❌ [Backend] Tests failed!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+fi
+
+# --- 第三阶段: 深层构建验证 (最慢) ---
+if [ "$FE_CHANGES" != "0" ]; then
+    echo "🏗️ [Frontend] Verifying architecture (Dependency Cruiser)..."
+    cd rdt-frontend
+    if ! npm run depcruise; then
+        echo "❌ [Frontend] Architecture check failed!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+
+    echo "📦 [Frontend] Verifying build (Type check & Production build)..."
+    cd rdt-frontend
+    if ! npm run build >/dev/null 2>&1; then
+        echo "⚠️  Build failed, retrying with output to show errors..."
+        npm run build
+        echo "❌ [Frontend] Build failed!"
+        exit 1
+    fi
+    cd "$PROJECT_ROOT"
+fi
+
+# --- 第四阶段: 异步/非阻塞检查 ---
+if [ "$FE_CHANGES" != "0" ]; then
+    echo "🔍 [Frontend] Checking security dependencies (Non-blocking)..."
+    cd rdt-frontend
+    npm audit --audit-level=moderate --registry=https://registry.npmjs.org > /dev/null 2>&1 || echo "  ⚠️  [Frontend] Security vulnerabilities found (see npm audit for details)"
+    cd "$PROJECT_ROOT"
+fi
+
+echo "✨ All checks passed! Committing..."

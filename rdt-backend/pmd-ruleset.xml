@@ -1,0 +1,441 @@
+<?xml version="1.0"?>
+<ruleset name="RDT Ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        RDT Custom PMD Ruleset
+        - Architecture constraints
+        - Complexity limits
+        - Best practices
+    </description>
+
+    <!-- 1. Best Practices -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="GuardLogStatement"/> <!-- Lombok deals with this usually -->
+        <exclude name="JUnitTestsShouldIncludeAssert"/> <!-- ArchUnit tests might look empty -->
+    </rule>
+
+    <!-- 2. Code Style -->
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/> <!-- Lombok @NoArgsConstructor handles this -->
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="LongVariable"/> <!-- RDT prefers descriptive names -->
+        <exclude name="ShortVariable"/> <!-- Configured separately below -->
+    </rule>
+
+    <!-- Refined Code Style Rules -->
+    <rule ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="violationSuppressXPath" value="//VariableDeclaratorId[@Name='id']"/>
+        </properties>
+    </rule>
+
+    <!-- 3. Design -->
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/> <!-- Too strict for typical DTO mapping -->
+        <exclude name="DataClass"/> <!-- DTOs are data classes -->
+        <exclude name="UseUtilityClass"/>
+        <exclude name="ExcessiveImports"/>
+        <exclude name="CyclomaticComplexity"/> <!-- Refined below -->
+        <exclude name="NPathComplexity"/> <!-- Refined below -->
+        <exclude name="ExcessiveMethodLength"/> <!-- Refined below -->
+        <exclude name="ExcessiveClassLength"/> <!-- Refined below -->
+        <exclude name="ExcessiveParameterList"/> <!-- Refined below -->
+        <exclude name="LoosePackageCoupling"/> <!-- Misconfigured without specific packages -->
+    </rule>
+    
+    <!-- Complexity Configuration -->
+    <rule ref="category/java/design.xml/CognitiveComplexity">
+        <properties>
+            <property name="reportLevel" value="15"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/CyclomaticComplexity">
+        <properties>
+            <property name="methodReportLevel" value="10"/>
+            <property name="classReportLevel" value="60"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/NPathComplexity">
+        <properties>
+            <property name="reportLevel" value="200"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/ExcessiveMethodLength">
+        <properties>
+            <property name="minimum" value="60.0"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/ExcessiveClassLength">
+        <properties>
+            <property name="minimum" value="500.0"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/ExcessiveParameterList">
+        <properties>
+            <property name="minimum" value="5.0"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/GodClass"/>
+    <rule ref="category/java/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="threshold" value="20"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/ExcessivePublicCount">
+        <properties>
+            <property name="minimum" value="20.0"/>
+        </properties>
+    </rule>
+
+    <!-- 4. Error Prone -->
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="DataflowAnomalyAnalysis"/> <!-- High false positive rate -->
+        <exclude name="AvoidDuplicateLiterals"/> <!-- Refined configuration -->
+
+
+    </rule>
+
+
+
+    <!-- Refined Error Prone Rules -->
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+        <properties>
+            <property name="maxDuplicateLiterals" value="3"/>
+            <property name="skipAnnotations" value="true"/>
+        </properties>
+    </rule>
+
+
+
+
+
+    <!-- 5. Multithreading -->
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
+
+    <!-- Constraint: Thread Safety - Ban Legacy Date API -->
+    <rule name="NoLegacyTimeAPI"
+          language="java"
+          message="禁止使用旧版时间 API (SimpleDateFormat, Date, Calendar)，请使用 java.time (JSR-310) 以确保线程安全。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Old Date/Time APIs are not thread-safe or immutable. Use java.time.* instead.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ImportDeclaration/Name[
+    starts-with(@Image, 'java.text.SimpleDateFormat') or
+    starts-with(@Image, 'java.util.Date') or
+    starts-with(@Image, 'java.util.Calendar')
+]
+|
+//ClassOrInterfaceType[
+    @Image='SimpleDateFormat' or
+    @Image='Date' or
+    @Image='Calendar' or
+    @Image='java.text.SimpleDateFormat' or
+    @Image='java.util.Date' or
+    @Image='java.util.Calendar'
+]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- 6. Performance (NEW) -->
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/> <!-- Too strict for modern GC -->
+    </rule>
+
+    <!-- 7. Security -->
+    <rule ref="category/java/security.xml"/>
+
+
+    <!-- =================================================================== -->
+    <!-- Custom Architecture Rules (XPath)                                   -->
+    <!-- =================================================================== -->
+
+
+    <!-- Constraint: No Field Injection (@Autowired on field) -->
+    <rule name="NoFieldInjection"
+          language="java"
+          message="禁止使用字段注入 (@Autowired)，请使用构造器注入 (@RequiredArgsConstructor)。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Field injection is not recommended.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration
+    [./@Annotations/Annotation/MarkerAnnotation/Name[@Image='Autowired' or @Image='Resource' or @Image='Inject']]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: JPA Entity > No @Data/EqualsAndHashCode/ToString (Lazy Loading/Stack Overflow Issue) -->
+    <rule name="NoDangerousLombokOnEntity"
+          language="java"
+          message="JPA Entity 禁止使用 @Data, @EqualsAndHashCode 或 @ToString，请手动组合需要的注解并排除关联字段，以防止延迟加载触发意外查询或堆栈溢出。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Prevent dangerous Lombok annotations on Entities that trigger lazy associations or stack overflows.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration
+    [./@Annotations/Annotation/MarkerAnnotation/Name[@Image='Entity']]
+    [./@Annotations/Annotation/MarkerAnnotation/Name[@Image='Data' or @Image='EqualsAndHashCode' or @Image='ToString']]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No Hardcoded Chinese Characters in Strings (Use I18n) -->
+    <rule name="NoHardcodedChinese"
+          language="java"
+          message="禁止硬编码中文字符，请使用国际化配置。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Detects Chinese characters in String literals.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Literal[
+    matches(@Image, '.*[\u4e00-\u9fa5].*')
+]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No System.out/err (Use Logger) -->
+    <rule name="NoSystemPrint"
+          language="java"
+          message="禁止使用 System.out 或 System.err 进行日志打印，请使用 SLF4J @Slf4j。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>System.out is effectively dead code in production.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Name[starts-with(@Image, 'System.out') or starts-with(@Image, 'System.err')]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No e.printStackTrace() (Use Logger) -->
+    <rule name="NoPrintStackTrace"
+          language="java"
+          message="禁止使用 e.printStackTrace()，请使用 log.error(e.getMessage(), e)。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>printStackTrace prints to stderr which is hard to collect.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name[ends-with(@Image, 'printStackTrace')]]
+ [PrimarySuffix[count(*)=0]]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: Logging Performance Check (Use placeholders) -->
+    <rule name="UseLogPlaceholders"
+          language="java"
+          message="日志中禁止使用字符串拼接，请使用占位符 (e.g., log.info('id: {}', id))。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>String concatenation in log statements incurs cost even if logging is disabled.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name[
+   starts-with(@Image, 'log.') or
+   starts-with(@Image, 'logger.')
+ ]]
+ [PrimarySuffix/Arguments/ArgumentList/Expression/AdditiveExpression]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No Fully Qualified Class Names (Use Imports instead) -->
+    <rule name="NoFullyQualifiedName"
+          language="java"
+          message="禁止使用全路径类名 (FQDN)，请使用 import 导入类。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Enforces use of imports instead of FQDN. Uses prefix heuristic to avoid false positives on method calls.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Name[
+    (
+        starts-with(@Image, 'com.') or
+        starts-with(@Image, 'org.') or
+        starts-with(@Image, 'net.') or
+        starts-with(@Image, 'io.') or
+        starts-with(@Image, 'java.') or
+        starts-with(@Image, 'javax.') or
+        starts-with(@Image, 'jakarta.')
+    )
+    and not(ancestor::PackageDeclaration) 
+    and not(ancestor::ImportDeclaration)
+]
+|
+//ClassOrInterfaceType[
+    (
+        starts-with(@Image, 'com.') or
+        starts-with(@Image, 'org.') or
+        starts-with(@Image, 'net.') or
+        starts-with(@Image, 'io.') or
+        starts-with(@Image, 'java.') or
+        starts-with(@Image, 'javax.') or
+        starts-with(@Image, 'jakarta.')
+    )
+    and not(ancestor::PackageDeclaration) 
+    and not(ancestor::ImportDeclaration)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: Lombok Hygiene - @Builder on class usually needs @AllArgsConstructor + @NoArgsConstructor -->
+    <rule name="LombokSafeBuilder"
+          language="java"
+          message="使用 @Builder 时，建议同时提供 @AllArgsConstructor 和 @NoArgsConstructor (或使用 @Builder 加在构造函数上)。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Classes with @Builder and @NoArgsConstructor but missing @AllArgsConstructor will fail to compile or exhibit strange behavior.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration
+    [./@Annotations/Annotation/MarkerAnnotation/Name[@Image='Builder']]
+    [./@Annotations/Annotation/MarkerAnnotation/Name[@Image='NoArgsConstructor']]
+    [not(./@Annotations/Annotation/MarkerAnnotation/Name[@Image='AllArgsConstructor'])]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No Redundant @ResponseBody with @RestController -->
+    <rule name="NoRedundantResponseBody"
+          language="java"
+          message="使用 @RestController 时，禁止在类或方法上冗余使用 @ResponseBody。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>@RestController already includes @ResponseBody. Adding it again is redundant.</description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration
+    [
+        ./ModifierNode/Annotation//Name[@Image='RestController']
+        or
+        ends-with(@Image, 'Controller')
+    ]
+    //Annotation//Name[@Image='ResponseBody']
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: Unified Exception Handling - No try-catch in Controllers -->
+    <rule name="NoTryCatchInController"
+          language="java"
+          message="Controller 中禁止使用 try-catch，请抛出异常并由全局异常处理器 (@RestControllerAdvice) 统一处理。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Controllers should not handle exceptions locally. Use a global @RestControllerAdvice instead.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration
+    [
+        ./ModifierNode/Annotation//Name[@Image='RestController']
+        or
+        ends-with(@Image, 'Controller')
+    ]
+    //TryStatement
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No Direct Thread Pool Creation (Use Spring Bean) -->
+    <rule name="NoDirectThreadPoolCreation"
+          language="java"
+          message="禁止直接创建线程池，请使用 @Bean 配置或 Spring @Async 框架管理。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Direct thread pool creation bypasses Spring lifecycle management and can cause resource leaks.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//AllocationExpression/ClassOrInterfaceType[@Image='ThreadPoolExecutor' or @Image='ScheduledThreadPoolExecutor']
+|
+//Name[starts-with(@Image, 'Executors.new')]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Constraint: No Optional.get() without check -->
+    <rule name="NoOptionalGet"
+          language="java"
+          message="禁止直接使用 Optional.get()，请使用 orElse/orElseThrow/ifPresent 等安全方法。"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Optional.get() throws NoSuchElementException if empty. Use safer alternatives.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression
+    [PrimaryPrefix/Name[ends-with(@Image, '.get')]]
+    [preceding-sibling::*//ClassOrInterfaceType[@Image='Optional'] or 
+     ancestor::MethodDeclaration//ClassOrInterfaceType[@Image='Optional']]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>
