@@ -3,7 +3,6 @@ package com.rdt.auth.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -50,12 +49,6 @@ public class SysUser implements Serializable {
     private String password;
 
     /**
-     * 邮箱
-     */
-    @TableField("email")
-    private String email;
-
-    /**
      * 状态: 1=正常, 0=禁用, 2=锁定
      */
     @TableField("status")
@@ -90,23 +83,4 @@ public class SysUser implements Serializable {
      */
     @TableField("updated_at")
     private LocalDateTime updatedAt;
-
-    /**
-     * 创建人ID
-     */
-    @TableField("created_by")
-    private Long createdBy;
-
-    /**
-     * 更新人ID
-     */
-    @TableField("updated_by")
-    private Long updatedBy;
-
-    /**
-     * 软删除标记
-     */
-    @TableField("deleted_at")
-    @TableLogic
-    private LocalDateTime deletedAt;
 }
