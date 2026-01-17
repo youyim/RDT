@@ -18,8 +18,8 @@ export const UserListTable = ({ data, loading, onAction }: Readonly<UserListTabl
     return (
       <div className="glass-panel w-full overflow-hidden rounded-2xl shadow-2xl">
         <div className="space-y-4 p-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex animate-pulse items-center space-x-4">
+          {[...new Array(5)].map((_, i) => (
+            <div key={`skeleton-${i}`} className="flex animate-pulse items-center space-x-4">
               <div className="h-10 w-10 rounded-full bg-white/5" />
               <div className="flex-1 space-y-2">
                 <div className="h-4 w-64 rounded bg-white/5" />
@@ -51,7 +51,7 @@ export const UserListTable = ({ data, loading, onAction }: Readonly<UserListTabl
       <div className="overflow-x-auto">
         <table className="w-full min-w-max border-collapse text-left">
           <thead>
-            <tr className="border-b border-white/10 bg-white/[0.03]">
+            <tr className="border-b border-white/10 bg-white/3">
               <th className="p-5 text-xs font-black tracking-widest text-slate-500 uppercase">
                 {t('user.nameLine', 'Avatar / User Name')}
               </th>
@@ -68,7 +68,7 @@ export const UserListTable = ({ data, loading, onAction }: Readonly<UserListTabl
           </thead>
           <tbody className="divide-y divide-white/5">
             {data.map((user) => (
-              <tr key={user.id} className="group transition-colors hover:bg-white/[0.02]">
+              <tr key={user.id} className="group transition-colors hover:bg-white/2">
                 <td className="p-5">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-slate-800">
@@ -128,7 +128,7 @@ export const UserListTable = ({ data, loading, onAction }: Readonly<UserListTabl
       </div>
 
       {/* Pagination Placeholder */}
-      <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.01] p-4">
+      <div className="flex items-center justify-between border-t border-white/5 bg-white/1 p-4">
         <span className="text-xs font-medium text-slate-500">
           {t('user.showingUsers', 'Showing {{count}} users', { count: data.length })}
         </span>

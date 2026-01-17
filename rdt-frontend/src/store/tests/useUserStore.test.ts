@@ -11,7 +11,7 @@ vi.mock('@/api/user', () => ({
   userApi: {
     getUsers: vi.fn().mockResolvedValue({
       data: {
-        content: [{ id: 1, username: 'test' }],
+        records: [{ id: 1, username: 'test' }],
         total: 1,
       },
     }),

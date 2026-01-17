@@ -14,17 +14,17 @@ describe('UserFormModal', () => {
 
   it('should render form fields when open', () => {
     render(<UserFormModal isOpen={true} onClose={mockOnClose} onSubmit={mockOnSubmit} />);
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('user.username')).toBeInTheDocument();
+    expect(screen.getByLabelText('user.email')).toBeInTheDocument();
   });
 
   it('should validate required fields', async () => {
     render(<UserFormModal isOpen={true} onClose={mockOnClose} onSubmit={mockOnSubmit} />);
 
-    fireEvent.click(screen.getByText(/submit/i));
+    fireEvent.click(screen.getByText('user.save'));
 
     await waitFor(() => {
-      expect(screen.getByText(/username is required/i)).toBeInTheDocument();
+      expect(screen.getByText('validation.usernameRequired')).toBeInTheDocument();
     });
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
@@ -32,16 +32,16 @@ describe('UserFormModal', () => {
   it('should submit valid data', async () => {
     render(<UserFormModal isOpen={true} onClose={mockOnClose} onSubmit={mockOnSubmit} />);
 
-    fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'newuser' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'new@example.com' } });
+    fireEvent.change(screen.getByLabelText('user.username'), { target: { value: 'newuser' } });
+    fireEvent.change(screen.getByLabelText('user.email'), { target: { value: 'new@example.com' } });
 
     // If password is required for create
-    const passwordInput = screen.queryByLabelText(/password/i);
+    const passwordInput = screen.queryByLabelText('user.password');
     if (passwordInput) {
       fireEvent.change(passwordInput, { target: { value: 'password123' } });
     }
 
-    fireEvent.click(screen.getByText(/submit/i));
+    fireEvent.click(screen.getByText('user.save'));
 
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalled();

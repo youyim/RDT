@@ -33,7 +33,7 @@ mybatis-plus:
 logging:
   level:
     root: INFO
-    "com.rdt": DEBUG
+    "[com.rdt]": DEBUG
   file:
     name: logs/rdt.log
 

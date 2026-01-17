@@ -30,10 +30,10 @@ describe('UserListTable', () => {
 
     render(<UserListTable data={mockUsers} loading={false} onAction={() => {}} />);
 
-    expect(screen.getByText('Name')).toBeInTheDocument();
-    expect(screen.getByText('Email')).toBeInTheDocument();
-    expect(screen.getByText('Status')).toBeInTheDocument();
-    expect(screen.getByText('Action')).toBeInTheDocument();
+    expect(screen.getByText('user.nameLine')).toBeInTheDocument();
+    expect(screen.getByText('user.email')).toBeInTheDocument();
+    expect(screen.getByText('user.status')).toBeInTheDocument();
+    expect(screen.getByText('user.action')).toBeInTheDocument();
   });
 
   it('should render user data', () => {

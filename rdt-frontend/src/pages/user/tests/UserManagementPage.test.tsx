@@ -21,8 +21,30 @@ vi.mock('@/utils/ui', async (importOriginal) => {
   };
 });
 
+// Mock user API
+vi.mock('@/api/user', () => ({
+  userApi: {
+    getUsers: vi.fn(),
+    getUser: vi.fn(),
+    createUser: vi.fn(),
+    updateUser: vi.fn(),
+    deleteUser: vi.fn(),
+    resetPassword: vi.fn(),
+  },
+}));
+
 describe('UserManagementPage', () => {
   beforeEach(() => {
+    const mockUser = { id: 1, username: 'user_1', email: 'user1@example.com', status: 'ACTIVE' };
+    vi.mocked(userApi.getUsers).mockResolvedValue({
+      data: { records: [mockUser], total: 1 },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
     useUserStore.setState({
       users: [],
       total: 0,
@@ -43,7 +65,7 @@ describe('UserManagementPage', () => {
   it('should filter users on search', async () => {
     render(<UserManagementPage />);
 
-    const searchInput = screen.getByPlaceholderText(/search/i);
+    const searchInput = screen.getByPlaceholderText('user.searchPlaceholder');
     fireEvent.change(searchInput, { target: { value: 'user_1' } });
 
     await waitFor(() => {
@@ -55,10 +77,10 @@ describe('UserManagementPage', () => {
     render(<UserManagementPage />);
 
     // Click Add User
-    fireEvent.click(screen.getByText(/Add User/i));
+    fireEvent.click(screen.getByText('user.addUser'));
 
     await waitFor(() => {
-      expect(screen.getByText(/Create User/i)).toBeInTheDocument();
+      expect(screen.getByText('user.createUser')).toBeInTheDocument();
     });
   });
 
@@ -70,25 +92,25 @@ describe('UserManagementPage', () => {
     });
 
     // Find the Reset button by title
-    const resetBtns = screen.getAllByTitle('Reset Password');
+    const resetBtns = screen.getAllByTitle('user.resetPassword');
     fireEvent.click(resetBtns[0]);
 
     await waitFor(() => {
-      expect(screen.getByText(/Reset password for/i)).toBeInTheDocument();
+      expect(screen.getByText('user.resetPasswordDescription')).toBeInTheDocument();
     });
   });
 
   it('should confirm and delete user when Delete is clicked', async () => {
-    // Mock confirm to return true
-    const mockResponse = {
-      data: { content: [], total: 0 },
+    // mount call will use the default mock from beforeEach (which returns user_1)
+
+    // Setup for the refresh call after delete
+    const refreshResponse = {
+      data: { records: [], total: 0 },
       status: 200,
       statusText: 'OK',
       headers: {},
       config: {},
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(userApi.getUsers).mockResolvedValueOnce(mockResponse as any);
 
     render(<UserManagementPage />);
 
@@ -96,11 +118,15 @@ describe('UserManagementPage', () => {
       expect(screen.getByText('user_1')).toBeInTheDocument();
     });
 
-    const deleteBtns = screen.getAllByTitle('Delete');
+    const deleteBtns = screen.getAllByTitle('user.delete');
     fireEvent.click(deleteBtns[0]);
 
     await waitFor(() => {
       expect(ui.confirm).toHaveBeenCalled();
     });
+
+    // Mock the refresh call that happens after delete
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(userApi.getUsers).mockResolvedValueOnce(refreshResponse as any);
   });
 });

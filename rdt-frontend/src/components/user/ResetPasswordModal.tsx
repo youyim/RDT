@@ -72,7 +72,7 @@ export const ResetPasswordModal = ({
       <div className="glass-panel relative w-full max-w-md transform overflow-hidden rounded-2xl border border-white/10 bg-slate-950 p-6 shadow-2xl transition-all">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-xl font-bold text-transparent">
+            <h2 className="bg-linear-to-r from-white to-slate-400 bg-clip-text text-xl font-bold text-transparent">
               {t('user.resetPassword')}
             </h2>
             <p className="mt-1 text-xs text-slate-400">
