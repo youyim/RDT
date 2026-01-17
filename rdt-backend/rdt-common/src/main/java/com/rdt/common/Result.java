@@ -1,6 +1,8 @@
 package com.rdt.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.rdt.common.i18n.I18nKey;
+import com.rdt.common.util.MessageUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
@@ -9,9 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 统一响应类.
- *
- * <p>所有后端接口统一返回此格式，便于前端统一处理和 AI 协作。
+ * 统一响应类. 所有后端接口统一返回此格式，便于前端统一处理和 AI 协作。
  *
  * @param <T> 数据载体类型
  */
@@ -25,12 +25,12 @@ public class Result<T> {
     /**
      * 状态码
      * <ul>
-     *   <li>200 - 成功</li>
-     *   <li>400 - 请求参数错误</li>
-     *   <li>401 - 未授权</li>
-     *   <li>403 - 禁止访问</li>
-     *   <li>404 - 资源不存在</li>
-     *   <li>500 - 服务器内部错误</li>
+     * <li>200 - 成功</li>
+     * <li>400 - 请求参数错误</li>
+     * <li>401 - 未授权</li>
+     * <li>403 - 禁止访问</li>
+     * <li>404 - 资源不存在</li>
+     * <li>500 - 服务器内部错误</li>
      * </ul>
      */
     private int code;
@@ -99,10 +99,22 @@ public class Result<T> {
     }
 
     /**
-     * 失败响应（默认 500）
+     * 失败响应（默认 500）.
+     *
+     * @param message 错误信息
+     * @return Result
+     * @deprecated use {@link #error(int, I18nKey)} instead
      */
+    @Deprecated
     public static <T> Result<T> error(String message) {
         return error(ERROR_CODE, message);
+    }
+
+    /**
+     * 失败响应 (Type-Safe I18n)
+     */
+    public static <T> Result<T> error(int code, I18nKey key) {
+        return error(code, MessageUtils.get(key));
     }
 
     /**

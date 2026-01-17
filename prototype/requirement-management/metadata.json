@@ -1,0 +1,5 @@
+{
+  "name": "RDT-requirement",
+  "description": "A comprehensive R&D lifecycle management system featuring requirement editing, decomposition boards, and system design workspaces.",
+  "requestFramePermissions": []
+}

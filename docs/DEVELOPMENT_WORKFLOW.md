@@ -6,16 +6,68 @@
 
 ## 📑 目录
 
-- [工作流总览](#工作流总览)
-- [Phase 1: 需求沟通](#phase-1-需求沟通-requirement-communication)
-- [Phase 2a: 后端设计](#phase-2a-后端设计-backend-design)
-- [Phase 2b: 前端设计](#phase-2b-前端设计-frontend-design)
-- [Phase 3: 开发与测试 (TDD)](#phase-3-开发与测试-tdd-development--testing)
-- [Phase 3a: 代码评审](#phase-3a-代码评审-code-review)
-- [Phase 4: 验证](#phase-4-验证-verification)
-- [Phase 4a: 问题修复](#phase-4a-问题修复-bug-fix)
-- [Phase 5: 迭代与上线](#phase-5-迭代与上线-iteration--release)
-- [产出物格式规范](#产出物格式规范)
+- [辅助开发工作流框架 (Assisted Development Workflow)](#辅助开发工作流框架-assisted-development-workflow)
+  - [📑 目录](#-目录)
+  - [📁 产出物模板](#-产出物模板)
+  - [工作流总览](#工作流总览)
+    - [核心原则](#核心原则)
+    - [⚠️ 核心原则: 迭代沟通与对齐](#️-核心原则-迭代沟通与对齐)
+      - [沟通循环模型](#沟通循环模型)
+      - [每阶段对齐检查点](#每阶段对齐检查点)
+      - [对齐确认模板](#对齐确认模板)
+      - [防止信息不对齐的最佳实践](#防止信息不对齐的最佳实践)
+      - [阶段门禁 (Phase Gate)](#阶段门禁-phase-gate)
+      - [常见对齐失败场景及应对](#常见对齐失败场景及应对)
+    - [产出物流转图](#产出物流转图)
+  - [Phase 1: 需求沟通 (Requirement Communication)](#phase-1-需求沟通-requirement-communication)
+    - [目标](#目标)
+    - [流程指引](#流程指引)
+    - [产出物](#产出物)
+    - [阶段门禁](#阶段门禁)
+  - [Phase 2: 设计 (Design)](#phase-2-设计-design)
+    - [目标](#目标-1)
+  - [Phase 2a: 后端设计 (Backend Design)](#phase-2a-后端设计-backend-design)
+    - [目标](#目标-2)
+    - [流程指引](#流程指引-1)
+    - [产出物](#产出物-1)
+  - [Phase 2b: 前端设计 (Frontend Design)](#phase-2b-前端设计-frontend-design)
+    - [目标](#目标-3)
+    - [流程指引](#流程指引-2)
+    - [产出物](#产出物-2)
+  - [Phase 3: 开发与评审 (Implementation)](#phase-3-开发与评审-implementation)
+    - [目标](#目标-4)
+    - [流程指引](#流程指引-3)
+    - [产出物](#产出物-3)
+    - [阶段门禁](#阶段门禁-1)
+  - [Phase 3c: 代码评审 (Code Review)](#phase-3c-代码评审-code-review)
+    - [目标](#目标-5)
+    - [流程指引](#流程指引-4)
+    - [产出物](#产出物-4)
+    - [阶段门禁](#阶段门禁-2)
+  - [Phase 4: 质量与验证 (Quality \& Verification)](#phase-4-质量与验证-quality--verification)
+    - [目标](#目标-6)
+  - [Phase 4a: 问题修复 (Bug Fix)](#phase-4a-问题修复-bug-fix)
+    - [目标](#目标-7)
+    - [核心关注点](#核心关注点)
+    - [流程指引](#流程指引-5)
+    - [产出物](#产出物-5)
+    - [阶段门禁](#阶段门禁-3)
+  - [Phase 4b: 验证 (Verification)](#phase-4b-验证-verification)
+    - [目标](#目标-8)
+    - [流程指引](#流程指引-6)
+    - [产出物](#产出物-6)
+    - [阶段门禁](#阶段门禁-4)
+  - [Phase 5: 迭代与上线 (Iteration \& Release)](#phase-5-迭代与上线-iteration--release)
+    - [目标](#目标-9)
+    - [流程指引](#流程指引-7)
+    - [产出物](#产出物-7)
+    - [阶段门禁](#阶段门禁-5)
+  - [产出物格式规范](#产出物格式规范)
+    - [通用 YAML Frontmatter](#通用-yaml-frontmatter)
+    - [状态标记](#状态标记)
+    - [文档引用方式](#文档引用方式)
+  - [目录结构建议](#目录结构建议)
+  - [总结](#总结)
 
 ---
 
@@ -23,21 +75,21 @@
 
 每个阶段的产出物模板位于对应目录下，使用前请复制并重命名：
 
-| 阶段        | 模板文件                                                                     | 目录                             |
-| ----------- | ---------------------------------------------------------------------------- | -------------------------------- |
-| 需求沟通    | [\_TEMPLATE_PRD.md](./requirements/_TEMPLATE_PRD.md)                         | `docs/requirements/`             |
-| 设计-UI     | [\_TEMPLATE_UI_PROTOTYPE.md](./design/_TEMPLATE_UI_PROTOTYPE.md)             | `docs/design/`                   |
-| 设计-架构   | [\_TEMPLATE_ARCHITECTURE.md](./design/_TEMPLATE_ARCHITECTURE.md)             | `docs/design/`                   |
-| 设计-API    | [\_TEMPLATE_API.md](./design/_TEMPLATE_API.md)                               | `docs/design/`                   |
-| 设计-数据库 | [\_TEMPLATE_DATABASE.md](./design/_TEMPLATE_DATABASE.md)                     | `docs/design/`                   |
-| 设计-Schema | [\_TEMPLATE_DATABASE_SCHEMA.md](./design/_TEMPLATE_DATABASE_SCHEMA.md)       | `docs/design/DATABASE_SCHEMA.md` |
-| 设计-前端   | [\_TEMPLATE_FRONTEND.md](./design/_TEMPLATE_FRONTEND.md)                     | `docs/design/`                   |
-| 开发        | [\_TEMPLATE_IMPLEMENTATION.md](./implementation/_TEMPLATE_IMPLEMENTATION.md) | `docs/implementation/`           |
-| 代码评审    | [\_TEMPLATE_CODE_REVIEW.md](./code_review/_TEMPLATE_CODE_REVIEW.md)          | `docs/code_review/`              |
-| 测试        | [\_TEMPLATE_TESTCASE.md](./test/_TEMPLATE_TESTCASE.md)                       | `docs/test/`                     |
-| 问题修复    | [\_TEMPLATE_BUGFIX.md](./bugfix/_TEMPLATE_BUGFIX.md)                         | `docs/bugfix/`                   |
-| 验证        | [\_TEMPLATE_VERIFICATION.md](./verification/_TEMPLATE_VERIFICATION.md)       | `docs/verification/`             |
-| 上线        | [\_TEMPLATE_RELEASE.md](./release/_TEMPLATE_RELEASE.md)                      | `docs/release/`                  |
+| 阶段           | 模板文件                                                                     | 目录                             |
+| -------------- | ---------------------------------------------------------------------------- | -------------------------------- |
+| Phase 1        | [\_TEMPLATE_PRD.md](./requirements/_TEMPLATE_PRD.md)                         | `docs/requirements/`             |
+| Phase 2-UI     | [\_TEMPLATE_UI_PROTOTYPE.md](./design/_TEMPLATE_UI_PROTOTYPE.md)             | `docs/design/`                   |
+| Phase 2-架构   | [\_TEMPLATE_ARCHITECTURE.md](./design/_TEMPLATE_ARCHITECTURE.md)             | `docs/design/`                   |
+| Phase 2-API    | [\_TEMPLATE_API.md](./design/_TEMPLATE_API.md)                               | `docs/design/`                   |
+| Phase 2-DB     | [\_TEMPLATE_DATABASE.md](./design/_TEMPLATE_DATABASE.md)                     | `docs/design/`                   |
+| Phase 2-Schema | [\_TEMPLATE_DATABASE_SCHEMA.md](./design/_TEMPLATE_DATABASE_SCHEMA.md)       | `docs/design/DATABASE_SCHEMA.md` |
+| Phase 2-前端   | [\_TEMPLATE_FRONTEND.md](./design/_TEMPLATE_FRONTEND.md)                     | `docs/design/`                   |
+| Phase 3-开发   | [\_TEMPLATE_IMPLEMENTATION.md](./implementation/_TEMPLATE_IMPLEMENTATION.md) | `docs/implementation/`           |
+| Phase 3-评审   | [\_TEMPLATE_CODE_REVIEW.md](./code_review/_TEMPLATE_CODE_REVIEW.md)          | `docs/code_review/`              |
+| Phase 3-测试   | [\_TEMPLATE_TESTCASE.md](./test/_TEMPLATE_TESTCASE.md)                       | `docs/test/`                     |
+| Phase 4-修复   | [\_TEMPLATE_BUGFIX.md](./bugfix/_TEMPLATE_BUGFIX.md)                         | `docs/bugfix/`                   |
+| Phase 4-验证   | [\_TEMPLATE_VERIFICATION.md](./verification/_TEMPLATE_VERIFICATION.md)       | `docs/verification/`             |
+| Phase 5        | [\_TEMPLATE_RELEASE.md](./release/_TEMPLATE_RELEASE.md)                      | `docs/release/`                  |
 
 **规范文档**:
 
@@ -46,17 +98,17 @@
 
 **阶段流程** (位于 `.agent/workflows/`):
 
-| 阶段      | 流程文件                                                                                   |
-| --------- | ------------------------------------------------------------------------------------------ |
-| 需求沟通  | [01-requirements-prompt.md](../.agent/workflows/01-requirements-prompt.md)                 |
-| 设计-后端 | [02a-backend-design-prompt.md](../.agent/workflows/02a-backend-design-prompt.md)           |
-| 设计-前端 | [02b-frontend-design-prompt.md](../.agent/workflows/02b-frontend-design-prompt.md)         |
-| 开发-后端 | [03-backend-development-prompt.md](../.agent/workflows/03-backend-development-prompt.md)   |
-| 开发-前端 | [04-frontend-development-prompt.md](../.agent/workflows/04-frontend-development-prompt.md) |
-| 代码评审  | [05-code-review-prompt.md](../.agent/workflows/05-code-review-prompt.md)                   |
-| 问题修复  | [06-bugfix-prompt.md](../.agent/workflows/06-bugfix-prompt.md)                             |
-| 验证      | [07-verification-prompt.md](../.agent/workflows/07-verification-prompt.md)                 |
-| 迭代/发布 | [08-iteration-release-prompt.md](../.agent/workflows/08-iteration-release-prompt.md)       |
+| 阶段     | 流程文件                                                                                   |
+| -------- | ------------------------------------------------------------------------------------------ |
+| Phase 1  | [01-requirements-prompt.md](../.agent/workflows/01-requirements-prompt.md)                 |
+| Phase 2a | [02a-backend-design-prompt.md](../.agent/workflows/02a-backend-design-prompt.md)           |
+| Phase 2b | [02b-frontend-design-prompt.md](../.agent/workflows/02b-frontend-design-prompt.md)         |
+| Phase 3a | [03-backend-development-prompt.md](../.agent/workflows/03-backend-development-prompt.md)   |
+| Phase 3b | [04-frontend-development-prompt.md](../.agent/workflows/04-frontend-development-prompt.md) |
+| Phase 3c | [05-code-review-prompt.md](../.agent/workflows/05-code-review-prompt.md)                   |
+| Phase 4a | [06-bugfix-prompt.md](../.agent/workflows/06-bugfix-prompt.md)                             |
+| Phase 4b | [07-verification-prompt.md](../.agent/workflows/07-verification-prompt.md)                 |
+| Phase 5  | [08-iteration-release-prompt.md](../.agent/workflows/08-iteration-release-prompt.md)       |
 
 ---
 
@@ -213,14 +265,20 @@ graph TB
         UI[UI 设计]
     end
 
-    subgraph Phase3[开发 & TDD]
+    subgraph Phase3[开发 & 评审]
         IMPL[实现规范]
         TC[测试用例]
         CODE[代码]
+        CR[评审报告]
     end
 
-    subgraph Phase4[验证]
+    subgraph Phase4[质量与验证]
+        FIX[修复记录]
         AC[验收报告]
+    end
+
+    subgraph Phase5[发布]
+        REL[发布记录]
     end
 
     PRD --> ARCH
@@ -230,7 +288,10 @@ graph TB
     DB --> CODE
     IMPL --> TC
     TC --> CODE
-    CODE --> AC
+    CODE --> CR
+    CR --> FIX
+    FIX --> AC
+    AC --> REL
 ```
 
 ---
@@ -261,6 +322,12 @@ graph TB
 ---
 
 ---
+
+## Phase 2: 设计 (Design)
+
+### 目标
+
+基于需求构建系统的技术方案。
 
 ## Phase 2a: 后端设计 (Backend Design)
 
@@ -299,18 +366,19 @@ graph TB
 
 ---
 
-## Phase 3: 开发与测试 (TDD) (Development & Testing)
+## Phase 3: 开发与评审 (Implementation)
 
 ### 目标
 
-将设计转化为符合编码规范的代码实现，并采用测试驱动开发 (TDD) 确保代码质量。
+将设计转化为符合编码规范的代码实现，通过测试驱动开发 (TDD) 确保代码质量，并进行严格的代码评审。
 
 ### 流程指引
 
 详细流程请参考:
 
-- 后端: [03-backend-development-prompt.md](../.agent/workflows/03-backend-development-prompt.md)
-- 前端: [04-frontend-development-prompt.md](../.agent/workflows/04-frontend-development-prompt.md)
+- Phase 3a (后端): [03-backend-development-prompt.md](../.agent/workflows/03-backend-development-prompt.md)
+- Phase 3b (前端): [04-frontend-development-prompt.md](../.agent/workflows/04-frontend-development-prompt.md)
+- Phase 3c (评审): [05-code-review-prompt.md](../.agent/workflows/05-code-review-prompt.md)
 
 ### 产出物
 
@@ -328,7 +396,7 @@ graph TB
 
 ---
 
-## Phase 3a: 代码评审 (Code Review)
+## Phase 3c: 代码评审 (Code Review)
 
 ### 目标
 
@@ -353,11 +421,17 @@ graph TB
 
 ---
 
+## Phase 4: 质量与验证 (Quality & Verification)
+
+### 目标
+
+确保代码质量符合标准，修复发现的缺陷，并完成最终验证。
+
 ## Phase 4a: 问题修复 (Bug Fix)
 
 ### 目标
 
-分析验证或生产环境发现的问题，设计修复方案并记录决策过程。
+分析实现、测试或验证阶段发现的问题，设计修复方案并记录决策过程。
 
 ### 核心关注点
 
@@ -386,11 +460,11 @@ graph TB
 
 ---
 
-## Phase 4: 验证 (Verification)
+## Phase 4b: 验证 (Verification)
 
 ### 目标
 
-确认实现满足需求，准备发布。
+确认最终实现满足需求，准备发布。
 
 ### 流程指引
 

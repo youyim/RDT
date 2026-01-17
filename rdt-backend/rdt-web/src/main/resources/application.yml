@@ -19,7 +19,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/rdt_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: rdt
-    password: rdt@2026!
+    password: ${DB_PASSWORD:rdt@2026!}
   flyway:
     baseline-on-migrate: true
 
@@ -33,4 +33,9 @@ mybatis-plus:
 logging:
   level:
     root: INFO
-    com.rdt: DEBUG
+    "com.rdt": DEBUG
+
+jwt:
+  # 32+ characters for HS256
+  secret: rdt-backend-secret-key-1234567890-abcdefg-hijklmn
+  expiration: 7200000 # 2 hours

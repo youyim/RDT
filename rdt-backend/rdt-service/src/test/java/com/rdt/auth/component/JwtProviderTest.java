@@ -10,8 +10,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class JwtProviderTest {
 
+    @org.mockito.Mock
+    private com.rdt.auth.config.JwtProperties jwtProperties;
+
     @InjectMocks
     private JwtProvider jwtProvider;
+
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        org.mockito.Mockito.lenient()
+                .when(jwtProperties.getSecret())
+                .thenReturn("mySecretKeyAvailableForTestingPurposeOnly123456");
+        org.mockito.Mockito.lenient().when(jwtProperties.getExpiration()).thenReturn(3600000L);
+        jwtProvider.init();
+    }
 
     @Test
     void generateToken_Success() {

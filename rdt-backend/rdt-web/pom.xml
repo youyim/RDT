@@ -58,6 +58,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- MyBatis Plus (Explicit to fix Page.setRecords issue) -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>3.5.5</version>
+        </dependency>
+
         <!-- Database Driver -->
         <dependency>
             <groupId>com.mysql</groupId>

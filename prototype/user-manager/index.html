@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Global User Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "accent-blue": "#137fec",
+                        "background-dark": "#0a0b10"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        lg: "2rem",
+                        xl: "3rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #0a0b10;
+            background-image: radial-gradient(circle at 20% 20%, rgba(19, 127, 236, 0.05) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(19, 127, 236, 0.03) 0%, transparent 40%);
+        }
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.02;
+            z-index: 50;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBTUSMziswZ_8IclcguHUy657w29tvxSmsGOiKhyI2re6tfvSD9Y0bR4S-n6ELRnP66yhjuOpKWWWm90aioDiL5RU_Bb7tTw9CwVol2CpqS2Qcqo9xMn4urL1d5sVv2GxN0cN0TH3IcDHxXalrv3CTvyd64pyGUiRe22dP_IQXOGeNZ2WHUiUEo6cuaFLnLuYAV9P3KDDxWqKUCtO3NuwS_P2tonaohIUkSPuKC6U3arV4v7kTNLwPZxM26m0erZIRmZy4WD-D5b67n);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-icon-btn {
+            @apply p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-slate-400 hover:text-white flex items-center justify-center;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-background-dark text-slate-200 min-h-screen selection:bg-primary/30">
+    <div class="noise-overlay"></div>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
