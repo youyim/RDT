@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 import { userApi } from '@/api/user';
 import type { CreateUserRequest, UpdateUserRequest, UserDTO, UserFilter } from '@/types/user';
+import { ui } from '@/utils/ui';
 
 interface UserState {
   users: UserDTO[];
@@ -46,14 +47,16 @@ export const useUserStore = create<UserState>((set, get) => ({
       }
     } catch (error) {
       set({ loading: false });
-      console.error(error);
+      ui.error(error instanceof Error ? error.message : 'Failed to fetch users');
     }
   },
   setFilter: (patch) => {
     set((state) => ({ filters: { ...state.filters, ...patch } }));
     get()
       .fetchUsers()
-      .catch((error) => console.error(error));
+      .catch((error: unknown) =>
+        ui.error(error instanceof Error ? error.message : 'Failed to fetch users')
+      );
   },
   createUser: async (data) => {
     set({ requestLoading: true });

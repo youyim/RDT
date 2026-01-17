@@ -1,8 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { userApi } from '@/api/user';
 import { useUserStore } from '@/store/useUserStore';
+import type { UserDTO } from '@/types/user';
+import { UserStatus } from '@/types/user';
 import type * as UiUtils from '@/utils/ui';
 import { ui } from '@/utils/ui';
 
@@ -33,17 +36,32 @@ vi.mock('@/api/user', () => ({
   },
 }));
 
+/**
+ * Type-safe helper to create mock Axios responses.
+ * @param data - The response data payload
+ * @returns A properly typed AxiosResponse object
+ */
+const createMockResponse = <T,>(data: T): AxiosResponse<T> => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as InternalAxiosRequestConfig,
+});
+
 describe('UserManagementPage', () => {
   beforeEach(() => {
-    const mockUser = { id: 1, username: 'user_1', email: 'user1@example.com', status: 'ACTIVE' };
-    vi.mocked(userApi.getUsers).mockResolvedValue({
-      data: { records: [mockUser], total: 1 },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {},
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
+    const mockUser: UserDTO = {
+      id: 1,
+      username: 'user_1',
+      email: 'user1@example.com',
+      status: UserStatus.ACTIVE,
+      avatar: '',
+      createdAt: '2026-01-01T00:00:00Z',
+    };
+    vi.mocked(userApi.getUsers).mockResolvedValue(
+      createMockResponse({ records: [mockUser], total: 1, current: 1, size: 10, pages: 1 })
+    );
 
     useUserStore.setState({
       users: [],
@@ -104,13 +122,13 @@ describe('UserManagementPage', () => {
     // mount call will use the default mock from beforeEach (which returns user_1)
 
     // Setup for the refresh call after delete
-    const refreshResponse = {
-      data: { records: [], total: 0 },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {},
-    };
+    const refreshResponse = createMockResponse({
+      records: [],
+      total: 0,
+      current: 1,
+      size: 10,
+      pages: 0,
+    });
 
     render(<UserManagementPage />);
 
@@ -126,7 +144,6 @@ describe('UserManagementPage', () => {
     });
 
     // Mock the refresh call that happens after delete
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(userApi.getUsers).mockResolvedValueOnce(refreshResponse as any);
+    vi.mocked(userApi.getUsers).mockResolvedValueOnce(refreshResponse);
   });
 });

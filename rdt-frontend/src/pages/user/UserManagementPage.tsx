@@ -81,7 +81,7 @@ export const UserManagementPage = () => {
       setSelectedUser(user);
       setIsModalOpen(true);
     } else if (type === 'delete') {
-      // Confirm delete
+      // Confirm delete (synchronous)
       const confirmed = ui.confirm(t('user.deleteConfirm'));
       if (confirmed) {
         try {
