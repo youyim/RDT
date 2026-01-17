@@ -1,0 +1,5 @@
+{
+  "name": "Global Config Center",
+  "description": "A modern system configuration management tool supporting hierarchical system-subsystem relationships, git repository mapping, and ownership assignment.",
+  "requestFramePermissions": []
+}
