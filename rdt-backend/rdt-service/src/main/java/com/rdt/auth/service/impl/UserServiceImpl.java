@@ -2,6 +2,7 @@ package com.rdt.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rdt.auth.i18n.UserMessages;
 import com.rdt.auth.mapper.UserMapper;
 import com.rdt.auth.model.dto.CreateUserReq;
 import com.rdt.auth.model.dto.UpdateUserReq;
@@ -26,14 +27,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String USER_NOT_FOUND_MSG = "User not found";
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createUser(CreateUserReq req) {
         // Check if username exists
         if (userMapper.selectCount(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, req.getUsername())) > 0) {
-            throw BusinessException.badRequest("Username already exists");
+            throw BusinessException.badRequest(UserMessages.USERNAME_ALREADY_EXISTS);
         }
 
         SysUser user = new SysUser();
@@ -46,7 +45,7 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(LocalDateTime.now());
 
         if (userMapper.insert(user) <= 0) {
-            throw BusinessException.serverError("Failed to create user");
+            throw BusinessException.serverError(UserMessages.CREATE_FAILED);
         }
     }
 
@@ -55,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public void updateUser(Long id, UpdateUserReq req) {
         SysUser existingUser = userMapper.selectById(id);
         if (existingUser == null) {
-            throw BusinessException.notFound(USER_NOT_FOUND_MSG);
+            throw BusinessException.notFound(UserMessages.USER_NOT_FOUND);
         }
 
         // Update fields
@@ -68,7 +67,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setUpdatedAt(LocalDateTime.now());
 
         if (userMapper.updateById(existingUser) <= 0) {
-            throw BusinessException.serverError("Failed to update user");
+            throw BusinessException.serverError(UserMessages.UPDATE_FAILED);
         }
     }
 
@@ -77,7 +76,7 @@ public class UserServiceImpl implements UserService {
     public boolean softDeleteUser(Long id) {
         SysUser existingUser = userMapper.selectById(id);
         if (existingUser == null) {
-            throw BusinessException.notFound(USER_NOT_FOUND_MSG);
+            throw BusinessException.notFound(UserMessages.USER_NOT_FOUND);
         }
         // Assuming MyBatis Plus handles soft delete via @TableLogic if configured or we
         // rely on deleteById
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public boolean mockResetPassword(Long id) {
         SysUser user = userMapper.selectById(id);
         if (user == null) {
-            throw BusinessException.notFound(USER_NOT_FOUND_MSG);
+            throw BusinessException.notFound(UserMessages.USER_NOT_FOUND);
         }
         log.info("Mock reset password email sent to {}", user.getEmail());
         return true;

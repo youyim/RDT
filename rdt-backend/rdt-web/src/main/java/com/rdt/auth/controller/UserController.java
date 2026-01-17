@@ -77,7 +77,7 @@ public class UserController {
         if (userService.softDeleteUser(id)) {
             return Result.success();
         } else {
-            return Result.error(CODE_INTERNAL_ERROR, "Failed to delete user");
+            return Result.error(CODE_INTERNAL_ERROR, UserMessages.DELETE_FAILED);
         }
     }
 
@@ -88,7 +88,7 @@ public class UserController {
         if (userService.mockResetPassword(id)) {
             return Result.success();
         } else {
-            return Result.error(CODE_INTERNAL_ERROR, "Failed to reset password");
+            return Result.error(CODE_INTERNAL_ERROR, UserMessages.RESET_PASSWORD_FAILED);
         }
     }
 }

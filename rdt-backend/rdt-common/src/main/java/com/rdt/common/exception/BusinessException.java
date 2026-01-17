@@ -1,11 +1,12 @@
 package com.rdt.common.exception;
 
+import com.rdt.common.i18n.I18nKey;
+import com.rdt.common.util.MessageUtils;
 import lombok.Getter;
 
 /**
  * 业务异常类.
- *
- * <p>用于业务逻辑校验失败时抛出，由全局异常处理器统一捕获并返回友好提示。
+ * 用于业务逻辑校验失败时抛出，由全局异常处理器统一捕获并返回友好提示。
  */
 @Getter
 public class BusinessException extends RuntimeException {
@@ -35,7 +36,7 @@ public class BusinessException extends RuntimeException {
     /**
      * 构造业务异常.
      *
-     * @param code 错误码
+     * @param code    错误码
      * @param message 错误信息
      */
     public BusinessException(int code, String message) {
@@ -44,11 +45,23 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     * 构造业务异常 (带原因).
+     * 构造业务异常 (Type-Safe I18n).
      *
      * @param code 错误码
+     * @param key  i18n key
+     * @param args i18n arguments
+     */
+    public BusinessException(int code, I18nKey key, Object... args) {
+        super(MessageUtils.get(key, args));
+        this.code = code;
+    }
+
+    /**
+     * 构造业务异常 (带原因).
+     *
+     * @param code    错误码
      * @param message 错误信息
-     * @param cause 原始异常
+     * @param cause   原始异常
      */
     public BusinessException(int code, String message, Throwable cause) {
         super(message, cause);
@@ -66,6 +79,17 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
+     * 快速创建 400 错误 (Type-Safe I18n).
+     *
+     * @param key  i18n key
+     * @param args i18n arguments
+     * @return BusinessException
+     */
+    public static BusinessException badRequest(I18nKey key, Object... args) {
+        return new BusinessException(BAD_REQUEST_CODE, key, args);
+    }
+
+    /**
      * 快速创建 404 错误.
      *
      * @param message 错误信息
@@ -76,6 +100,17 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
+     * 快速创建 404 错误 (Type-Safe I18n).
+     *
+     * @param key  i18n key
+     * @param args i18n arguments
+     * @return BusinessException
+     */
+    public static BusinessException notFound(I18nKey key, Object... args) {
+        return new BusinessException(NOT_FOUND_CODE, key, args);
+    }
+
+    /**
      * 快速创建 500 错误.
      *
      * @param message 错误信息
@@ -83,5 +118,16 @@ public class BusinessException extends RuntimeException {
      */
     public static BusinessException serverError(String message) {
         return new BusinessException(SERVER_ERROR_CODE, message);
+    }
+
+    /**
+     * 快速创建 500 错误 (Type-Safe I18n).
+     *
+     * @param key  i18n key
+     * @param args i18n arguments
+     * @return BusinessException
+     */
+    public static BusinessException serverError(I18nKey key, Object... args) {
+        return new BusinessException(SERVER_ERROR_CODE, key, args);
     }
 }

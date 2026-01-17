@@ -37,5 +37,5 @@ logging:
 
 jwt:
   # 32+ characters for HS256
-  secret: rdt-backend-secret-key-1234567890-abcdefg-hijklmn
+  secret: ${JWT_SECRET:rdt-backend-secret-key-1234567890-abcdefg-hijklmn}
   expiration: 7200000 # 2 hours
