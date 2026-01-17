@@ -19,4 +19,13 @@
         <Class name="com.rdt.auth.component.JwtProvider" />
         <Bug pattern="EI_EXPOSE_REP2" />
     </Match>
+    <!-- Spring-managed Service beans are singletons, safe to store references -->
+    <Match>
+        <Class name="com.rdt.config.controller.MainSystemController" />
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
+    <Match>
+        <Class name="com.rdt.config.controller.SubSystemController" />
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
 </FindBugsFilter>
