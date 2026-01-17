@@ -100,7 +100,7 @@ public class SysUser implements Serializable {
     /**
      * 删除时间
      */
-    @TableLogic
+    @TableLogic(value = "NULL", delval = "NOW()")
     @TableField("deleted_at")
     private LocalDateTime deletedAt;
 }

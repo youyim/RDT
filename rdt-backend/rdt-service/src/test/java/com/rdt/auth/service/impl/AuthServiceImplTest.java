@@ -198,4 +198,13 @@ class AuthServiceImplTest {
         assertNotNull(user.getLockExpireTime());
         verify(userRepository).updateById(user);
     }
+
+    @Test
+    @DisplayName("Generate Hash for 123456")
+    void generateHash_ForManualUpdate() {
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder =
+                new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        String hash = encoder.encode("123456");
+        System.out.println("GENERATED_HASH_123456: " + hash);
+    }
 }

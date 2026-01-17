@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import { MainLayout } from '@/layouts/MainLayout';
 import { LoginPage } from '@/pages/login/LoginPage';
+import { UserManagementPage } from '@/pages/user/UserManagementPage';
 
 /**
  * Application Router Configuration
@@ -18,7 +19,10 @@ const routes: RouteObject[] = [
       </ProtectedRoute>
     ),
     children: [
-      // Add protected routes here
+      {
+        path: 'users',
+        element: <UserManagementPage />,
+      },
     ],
   },
   {

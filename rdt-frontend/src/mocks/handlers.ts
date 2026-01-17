@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw';
 
+import { userHandlers } from './handlers/userHandlers';
+
 export const handlers = [
+  ...userHandlers,
+
   http.post('/api/v1/auth/login', async ({ request }) => {
     const body = (await request.json()) as Record<string, unknown>;
 

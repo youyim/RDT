@@ -34,6 +34,8 @@ logging:
   level:
     root: INFO
     "com.rdt": DEBUG
+  file:
+    name: logs/rdt.log
 
 jwt:
   # 32+ characters for HS256

@@ -5,6 +5,7 @@ import com.rdt.auth.model.entity.SysUser;
 import com.rdt.auth.repository.UserRepository;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,6 +37,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 true, // accountNonExpired
                 true, // credentialsNonExpired
                 user.getStatus() != 2, // accountNonLocked: 2=锁定
-                Collections.emptyList());
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
     }
 }

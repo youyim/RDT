@@ -58,7 +58,7 @@ public class UserControllerTest {
 
         doNothing().when(userService).createUser(any(CreateUserReq.class));
 
-        mockMvc.perform(post("/api/v1/users")
+        mockMvc.perform(post("/users")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -78,7 +78,7 @@ public class UserControllerTest {
 
         when(userService.getUsers(anyInt(), anyInt(), any())).thenReturn(mockPage);
 
-        mockMvc.perform(get("/api/v1/users").param("page", "1").param("size", "10"))
+        mockMvc.perform(get("/users").param("page", "1").param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.records").isArray());
@@ -95,7 +95,7 @@ public class UserControllerTest {
 
         doNothing().when(userService).updateUser(anyLong(), any(UpdateUserReq.class));
 
-        mockMvc.perform(put("/api/v1/users/1")
+        mockMvc.perform(put("/users/1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -111,7 +111,7 @@ public class UserControllerTest {
     public void softDeleteUser_Success() throws Exception {
         when(userService.softDeleteUser(anyLong())).thenReturn(true);
 
-        mockMvc.perform(delete("/api/v1/users/1").with(csrf()))
+        mockMvc.perform(delete("/users/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
     }
@@ -124,7 +124,7 @@ public class UserControllerTest {
     public void resetPassword_Success() throws Exception {
         when(userService.mockResetPassword(anyLong())).thenReturn(true);
 
-        mockMvc.perform(post("/api/v1/users/1/reset-password").with(csrf()))
+        mockMvc.perform(post("/users/1/reset-password").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
     }

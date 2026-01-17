@@ -41,6 +41,7 @@ export const LoginForm = (): ReactElement => {
       manual: true,
       formatResult: (res) => res.data,
       onSuccess: async (data) => {
+        localStorage.setItem('token', data.token);
         setAuth(data.token, data.user);
         ui.success(t('login.success'));
         await navigate('/');
