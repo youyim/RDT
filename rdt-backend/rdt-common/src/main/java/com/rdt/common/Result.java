@@ -105,7 +105,7 @@ public class Result<T> {
      * @return Result
      * @deprecated use {@link #error(int, I18nKey)} instead
      */
-    @Deprecated
+    @Deprecated(since = "1.0.0")
     public static <T> Result<T> error(String message) {
         return error(ERROR_CODE, message);
     }

@@ -25,16 +25,9 @@ public final class MessageUtils {
      * @return localized message, or the code itself if not found
      * @deprecated use {@link #get(com.rdt.common.i18n.I18nKey, Object...)} instead
      */
-    @Deprecated
+    @Deprecated(since = "1.0.0")
     public static String get(String code, Object... args) {
-        MessageSource messageSource = MessageSourceHolder.getMessageSource();
-        if (messageSource == null) {
-            // Fallback if Spring context not initialized
-            return code;
-        }
-        Locale locale = LocaleContextHolder.getLocale();
-        // 第三个参数 code 作为 defaultMessage，确保不会抛出 NoSuchMessageException
-        return messageSource.getMessage(code, args, code, locale);
+        return getMessage(code, args);
     }
 
     /**
@@ -48,6 +41,20 @@ public final class MessageUtils {
         if (key == null) {
             return "";
         }
-        return get(key.getKey(), args);
+        return getMessage(key.getKey(), args);
+    }
+
+    /**
+     * Internal method to retrieve localized message.
+     */
+    private static String getMessage(String code, Object... args) {
+        MessageSource messageSource = MessageSourceHolder.getMessageSource();
+        if (messageSource == null) {
+            // Fallback if Spring context not initialized
+            return code;
+        }
+        Locale locale = LocaleContextHolder.getLocale();
+        // 第三个参数 code 作为 defaultMessage，确保不会抛出 NoSuchMessageException
+        return messageSource.getMessage(code, args, code, locale);
     }
 }
